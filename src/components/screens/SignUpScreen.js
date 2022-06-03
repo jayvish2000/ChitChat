@@ -312,7 +312,7 @@ const SignUpScreen = ({ navigation }) => {
         <TouchableOpacity
           onPress={() => navigation.navigate('Login')}
           style={[styles.forgotbtn, { justifyContent: 'center', alignItems: 'center', alignSelf: 'center', }]}>
-          <Text style={[styles.navbtntext, { color: '#9bc7f6', marginLeft: 4 }]}>Log in</Text>
+          <Text style={[styles.navbtntext, { color: '#3897f1', marginLeft: 4 }]}>Log in</Text>
         </TouchableOpacity>
       </View>
     </View>
