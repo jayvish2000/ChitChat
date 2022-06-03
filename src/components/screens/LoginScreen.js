@@ -19,7 +19,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Image style={{ width: '60%', height: '10%', alignSelf: 'center', marginBottom: '8%' }}
+      <Image style={{ width: '60%', height: '8%', alignSelf: 'center', marginBottom: '8%' }}
         source={{ uri: 'https://chitchatagency.com/wp-content/uploads/2022/02/chit-chat-logo-1-1.png' }} />
       <FormInput
         keyboardType="email-address"
