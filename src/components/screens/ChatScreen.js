@@ -25,10 +25,12 @@ const ChatScreen = ({ route }) => {
   const [video, setVideo] = useState(null);
   const [transferred, setTransferred] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [istyping, setIsTyping] = useState(false);
 
   const playPaused = () => {
     setPaused(!paused);
   };
+
   const refRBSheet = useRef();
 
   const { uid } = route.params;
@@ -102,6 +104,16 @@ const ChatScreen = ({ route }) => {
       })
   }
 
+  const userTyping = () => {
+    if (!istyping) {
+      setIsTyping({ istyping: true })
+    } else {
+      clearTimeout(timeout)
+    }
+  }
+  const timeout = setTimeout(() => {
+    setIsTyping({ istyping: false })
+  }, timeout);
 
   const renderBubble = props => {
     return (
@@ -214,7 +226,8 @@ const ChatScreen = ({ route }) => {
     await ImagePicker.openPicker({
       mediaType: 'photo',
       cropping: true,
-      compressImageQuality: 1
+      compressImageQuality: 1,
+      multiple: true
     }).then(async (imguri) => {
       const imageUri = Platform.OS === 'ios' ? imguri.sourceURL : imguri.path;
 
@@ -229,7 +242,7 @@ const ChatScreen = ({ route }) => {
       try {
         await task
         const url = await storageRef.getDownloadURL();
-        // console.log('urlsignup', url)
+        console.log('urlsignup', url)
         setImage(url)
       } catch (e) {
         console.log(e)
@@ -240,10 +253,11 @@ const ChatScreen = ({ route }) => {
 
   const uploadCameraImage = async () => {
     await ImagePicker.openCamera({
-      // cropping: true,
-      mediaType: 'any'
+      mediaType: 'any',
+      multiple: true
     }).then(async (imguri) => {
-      const imageUri = Platform.OS === 'ios' ? imguri.sourceURL : imguri.path;
+      console.log('mix', imguri)
+      const imageUri = Platform.OS === 'ios' ? imguri : imguri.path;
 
       let filename = imageUri.substring(imageUri.lastIndexOf('/') + 1);
 
@@ -268,7 +282,7 @@ const ChatScreen = ({ route }) => {
   const uploadVideo = async () => {
     await ImagePicker.openPicker({
       mediaType: 'video',
-
+      multiple: true
     }).then(async (videouri) => {
       const videoUri = Platform.OS === 'ios' ? videouri.sourceURL : videouri.path;
 
@@ -294,7 +308,7 @@ const ChatScreen = ({ route }) => {
         await storageRef.putFile(videoUri);
 
         const url = await storageRef.getDownloadURL();
-        // console.log('Videos', url)
+        console.log('Videos', url)
         setVideo(url)
       } catch (e) {
         console.log(e)
@@ -341,6 +355,7 @@ const ChatScreen = ({ route }) => {
           name: userData?.fname,
           avatar: userData?.userImg,
         }}
+        isTyping={userTyping}
         renderBubble={renderBubble}
         renderSend={customSend}
         scrollToBottom
@@ -363,7 +378,7 @@ const ChatScreen = ({ route }) => {
                 }
               }}
             >
-              <Text style={{ fontSize: 18, fontWeight: '500', alignSelf: 'center', color: '#2e64e5' }}>Choose From</Text>
+              <Text style={{ fontSize: 18, fontWeight: '500', alignSelf: 'center', color: '#000' }}>Choose From</Text>
               <View
                 style={{
                   borderBottomWidth: 1,
@@ -372,7 +387,7 @@ const ChatScreen = ({ route }) => {
                 }}
               />
               <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', padding: 35 }}>
-                <TouchableOpacity
+                <TouchableOpacity activeOpacity={0.7}
                   style={{
                     flex: 1,
                     flexDirection: 'column',
@@ -387,23 +402,23 @@ const ChatScreen = ({ route }) => {
                       elevation: 2,
                       height: 40,
                       width: 40,
-                      backgroundColor: '#2e64e515',
+                      backgroundColor: '#000',
                       justifyContent: 'center',
                       alignItems: 'center',
                       shadowColor: '#fff'
                     }}>
-                    <MaterialCommunityIcons name="camera" size={25} color="#2e64e5" />
+                    <MaterialCommunityIcons name="camera" size={25} color="#fff" />
                   </View>
                   <Text
                     style={{
-                      color: '#2e64e5',
+                      color: '#000',
                       fontSize: 16,
                       padding: 12,
                     }}>
                     Camera
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity
+                <TouchableOpacity activeOpacity={0.7}
                   style={{
                     flex: 1,
                     flexDirection: 'column',
@@ -418,23 +433,23 @@ const ChatScreen = ({ route }) => {
                       elevation: 2,
                       height: 40,
                       width: 40,
-                      backgroundColor: '#2e64e515',
+                      backgroundColor: '#000',
                       justifyContent: 'center',
                       alignItems: 'center',
                       shadowColor: '#fff'
                     }}>
-                    <MaterialCommunityIcons name="folder-image" size={25} color="#2e64e5" />
+                    <MaterialCommunityIcons name="folder-image" size={25} color="#fff" />
                   </View>
                   <Text
                     style={{
-                      color: '#2e64e5',
+                      color: '#000',
                       fontSize: 16,
                       padding: 12,
                     }}>
                     Gallery
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity
+                <TouchableOpacity activeOpacity={0.7}
                   style={{
                     flex: 1,
                     flexDirection: 'column',
@@ -450,7 +465,7 @@ const ChatScreen = ({ route }) => {
                       elevation: 2,
                       height: 40,
                       width: 40,
-                      backgroundColor: '#2e64e515',
+                      backgroundColor: '#000',
                       justifyContent: 'center',
                       alignItems: 'center',
                       shadowColor: '#fff'
@@ -458,12 +473,12 @@ const ChatScreen = ({ route }) => {
                     <MaterialCommunityIcons
                       name="video"
                       size={25}
-                      color="#2e64e5"
+                      color="#fff"
                     />
                   </View>
                   <Text
                     style={{
-                      color: '#2e64e5',
+                      color: '#000',
                       fontSize: 16,
                       padding: 12,
                     }}>
