@@ -4,10 +4,10 @@ import React, {
   useContext,
   useRef
 } from 'react';
-import { View, Image, TouchableOpacity, Dimensions, Text, ImageBackground, TextInput, Pressable, Alert } from 'react-native';
+import { View, Image, TouchableOpacity, Dimensions, Text, ImageBackground, Pressable, Alert } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { Bubble, GiftedChat, Send, InputToolbar } from 'react-native-gifted-chat';
+import { Bubble, GiftedChat, Send, InputToolbar, Message } from 'react-native-gifted-chat';
 import { AuthContext } from '../../../navigation/AuthProvider';
 import firestore from '@react-native-firebase/firestore';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -26,6 +26,7 @@ const ChatScreen = ({ route }) => {
   const [transferred, setTransferred] = useState(0);
   const [paused, setPaused] = useState(false);
   const [istyping, setIsTyping] = useState(false);
+  const [deleted, setDeleted] = useState(false);
 
   const playPaused = () => {
     setPaused(!paused);
@@ -50,8 +51,7 @@ const ChatScreen = ({ route }) => {
     getUser();
   }, []);
 
-  useEffect(() => {
-
+  const fetchmsg = () => {
     const docid = uid > user.uid ? user.uid + "-" + uid : uid + "-" + user.uid
 
     const messageRef = firestore()
@@ -81,7 +81,12 @@ const ChatScreen = ({ route }) => {
     return () => {
       unSubscribe()
     }
-  }, []);
+  }
+
+  useEffect(() => {
+    fetchmsg()
+    setDeleted(false);
+  }, [deleted]);
 
   const onSend = async (messageArray) => {
     const msg = messageArray[0]
@@ -343,7 +348,32 @@ const ChatScreen = ({ route }) => {
       </View>
     );
   };
+  const onDelete = async (messageIdToDelete) => {
 
+    const docid = uid > user.uid ? user.uid + "-" + uid : uid + "-" + user.uid
+    setMessages(previousMessages => previousMessages.filter(doc => doc._id != messageIdToDelete))
+
+  }
+
+  const onLongPress = (context, message) => {
+    // console.log('messages', message);
+    const msg = message.text || message.image || message.video
+    const options = ['copy', 'Delete Message', 'Cancel'];
+    const cancelButtonIndex = options.length - 1;
+    context.actionSheet().showActionSheetWithOptions({
+      options,
+      cancelButtonIndex
+    }, (buttonIndex) => {
+      switch (buttonIndex) {
+        case 0:
+          Clipboard.setString(msg);
+          break;
+        case 1:
+          onDelete(message._id)
+          break;
+      }
+    });
+  }
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <GiftedChat
@@ -355,14 +385,15 @@ const ChatScreen = ({ route }) => {
           name: userData?.fname,
           avatar: userData?.userImg,
         }}
+        // renderMessage={renderMessage}
         isTyping={userTyping}
         renderBubble={renderBubble}
         renderSend={customSend}
+        onLongPress={onLongPress}
         scrollToBottom
         placeholder={image || video ? "Add Caption" : "Type a message..."}
         scrollToBottomComponent={scrollToBottomComponent}
         alwaysShowSend={true}
-        // isTyping={true}
         renderActions={() => (
           <View>
             <RBSheet

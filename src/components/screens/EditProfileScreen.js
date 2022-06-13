@@ -57,8 +57,6 @@ const EditProfileScreen = ({ navigation }) => {
         fname: userData.fname,
         about: userData.about,
         phone: userData.phone,
-        country: userData.country,
-        city: userData.city,
         userImg: imgUrl,
       })
       .then(() => {
@@ -340,42 +338,6 @@ const EditProfileScreen = ({ navigation }) => {
           style={styles.textInput}
         />
       </View>
-
-      <View style={styles.actioncontainer}>
-        <FontAwesome
-          style={styles.icon}
-          name="globe"
-          color="#333333"
-          size={20}
-        />
-        <View style={{ borderRightWidth: 1, height: '110%', padding: 5 }} />
-        <TextInput
-          placeholder="Country"
-          placeholderTextColor="#666666"
-          autoCorrect={false}
-          value={userData ? userData.country : ''}
-          onChangeText={txt => setUserData({ ...userData, country: txt })}
-          style={styles.textInput}
-        />
-      </View>
-      <View style={styles.actioncontainer}>
-        <MaterialCommunityIcons
-          style={styles.icon}
-          name="map-marker-outline"
-          color="#333333"
-          size={20}
-        />
-        <View style={{ borderRightWidth: 1, height: '110%', padding: 4 }} />
-        <TextInput
-          placeholder="City"
-          placeholderTextColor="#666666"
-          autoCorrect={false}
-          value={userData ? userData.city : ''}
-          onChangeText={txt => setUserData({ ...userData, city: txt })}
-          style={styles.textInput}
-        />
-      </View>
-
     </ScrollView>
   );
 };

@@ -1,5 +1,6 @@
 import React, { createContext, useState } from 'react';
 import auth, { firebase } from '@react-native-firebase/auth';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { ToastAndroid } from 'react-native'
 
 export const AuthContext = createContext();
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children }) => {
             console.log(e);
           }
         },
+
         forgotpassword: async (email) => {
           try {
             firebase.auth().sendPasswordResetEmail(email).then(() => {
@@ -39,6 +41,6 @@ export const AuthProvider = ({ children }) => {
         },
       }}>
       {children}
-    </AuthContext.Provider>
+    </AuthContext.Provider >
   );
 };
