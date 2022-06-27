@@ -307,7 +307,7 @@ const SignUpScreen = ({ navigation }) => {
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
         <Text style={styles.navbtntext}>
-          Have an account?
+       Already have an account?
         </Text>
         <TouchableOpacity
           onPress={() => navigation.navigate('Login')}
